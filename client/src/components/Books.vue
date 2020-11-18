@@ -2,7 +2,7 @@
 	<b-container>
 		<b-row>
 			<b-col>
-				<h1>Books</h1>
+				<h1>Your Books</h1>
 				<hr><br><br>
 				<alert v-show = "message != ''" :message = "message"></alert>
 				<button type="button" class="btn btn-success btn-sm" v-b-modal.book-modal>Add Book</button>
