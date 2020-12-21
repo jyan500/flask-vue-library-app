@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-import Ping from '../components/Ping.vue'
 import Books from '../components/Books.vue'
+import Home from '../components/Home.vue'
+import Login from '../components/Login.vue'
+import Register from '../components/Register.vue'
+import store from '../store/index.js'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
@@ -14,13 +17,31 @@ Vue.use(IconsPlugin)
 const routes = [
 	{
 		path : '/',
-		name : 'Books',
-		component : Books
+		name : 'Home',
+		component : Home
 	},
 	{
-		path : '/ping',
-		name : 'Ping',
-		component: Ping	
+		path: '/login',
+		name: 'Login',
+		component : Login
+	},
+	{
+		path: '/register',
+		name : 'Register',
+		component : Register,
+	},
+	{
+		path : '/books',
+		name : 'Books',
+		component : Books,
+		beforeEnter(to, from, next){
+			if (!store.getters.isAuthenticated){
+				next('/login')
+			}	
+			else {
+				next()
+			}
+		}
 	},
 ]
 

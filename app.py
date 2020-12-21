@@ -1,86 +1,55 @@
-from flask import Flask, jsonify, request
+from flask import Flask
+from flask.json import JSONEncoder
+from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
+from flask_migrate import Migrate
+from config import Config
+from datetime import date
 from flask_cors import CORS  
 import uuid
 
 # configuration
 DEBUG = True
 
-# instantiate the app
-app = Flask(__name__)
-app.config.from_object(__name__)
+db = SQLAlchemy()
+bcrypt = Bcrypt()
+login_manager = LoginManager()
+## the name of the function that defines our route is 'login'
+## login_manager.login_view = 'users.login'
+## bootstrap class to improve the look of the flashed message
+## login_manager.login_message_category = 'info'
 
-# enable cross origin requests (accepts every route)
-CORS(app, resources={r'/*': {'origins' : '*'}})
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, obj):
+        try:
+            if isinstance(obj, date):
+                return obj.isoformat()
+            iterable = iter(obj)
+        except TypeError:
+            pass
+        else:
+            return list(iterable)
+        return JSONEncoder.default(self, obj)
 
-BOOKS = [
-    {
-    	'id' : uuid.uuid4().hex,
-        'title': 'On the Road',
-        'author': 'Jack Kerouac',
-        'read': True
-    },
-    {
-    	'id' : uuid.uuid4().hex,
-        'title': 'Harry Potter and the Philosopher\'s Stone',
-        'author': 'J. K. Rowling',
-        'read': False
-    },
-    {
-    	'id' : uuid.uuid4().hex,
-        'title': 'Green Eggs and Ham',
-        'author': 'Dr. Seuss',
-        'read': True
-    }
-]
+def create_app(config_class=Config):
+	app = Flask(__name__)
+	app.config.from_object(Config)
+	# enable cross origin requests (accepts every route)
+	app.json_encoder = CustomJSONEncoder
+	db.init_app(app)
+	bcrypt.init_app(app)
+	login_manager.init_app(app)
+	migrate = Migrate(app, db)
 
-# sanity check route
-@app.route('/ping', methods = ['GET'])
-def ping_pong():
-	return jsonify('pong!')
+	## register blueprints here 
+	from api import api
+	app.register_blueprint(api)
+	## from biblejourney.main.routes import main
+	## from biblejourney.users.routes import users
+	## app.register_blueprint(main)
+	## app.register_blueprint(users)
 
-@app.route('/books', methods = ['GET', 'POST'])
-def all_books():
-	response_object = {'status' : 'success'}
-	if (request.method == 'POST'):
-		post_data = request.get_json()
-		BOOKS.append({
-			'id' : uuid.uuid4().hex,
-			'title' : post_data.get('title'),
-			'author' : post_data.get('author'),
-			'read' : post_data.get('read')
-		})
-		response_object['message'] = 'Book added!'
-	else:
-		response_object['books'] = BOOKS
+	import models
 
-	return jsonify(response_object)
-
-@app.route('/books/<book_id>', methods=['PUT', 'DELETE'])
-def single_book(book_id):
-    response_object = {'status': 'success'}
-    if request.method == 'PUT':
-        post_data = request.get_json()
-        remove_book(book_id)
-        BOOKS.append({
-            'id': uuid.uuid4().hex,
-            'title': post_data.get('title'),
-            'author': post_data.get('author'),
-            'read': post_data.get('read')
-        })
-        response_object['message'] = 'Book updated!'
-
-    if (request.method == "DELETE"):
-    	remove_book(book_id)
-    	response_object['message'] = 'Book removed!'
-
-    return jsonify(response_object)
-
-def remove_book(book_id):
-    for book in BOOKS:
-        if book['id'] == book_id:
-            BOOKS.remove(book)
-            return True
-    return False
-
-if __name__ == '__main__':
-	app.run()
+	return app

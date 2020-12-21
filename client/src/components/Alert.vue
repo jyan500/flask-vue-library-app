@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<b-alert variant = "success" show dismissible>{{ message }}</b-alert>
+		<b-alert :variant = "is_success ? 'success' : 'danger'" show>{{ message }}</b-alert>
 		<br>
 	</div>
 </template>
@@ -10,11 +10,14 @@
 <script>
 	export default {
 		props : {
-			message : String
+			message : String,
+			is_success : {
+				type : Boolean,
+				default : true 
+			} 
 		},
 		data(){
 			return {
-
 			}
 		},
 		methods : {

@@ -1,9 +1,10 @@
 <template>
-  <div id="app">
-    <div id="nav">
-    </div>
-    <router-view/>
-  </div>
+	<div id="app">
+		<Header></Header>
+		<b-container class = "mt-5">
+			<router-view/>
+		</b-container>
+	</div>
 </template>
 
 <style>
@@ -11,7 +12,6 @@
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 
@@ -28,3 +28,12 @@
   color: #42b983;
 }
 </style>
+
+<script>
+	import Header from './components/Header.vue'
+	export default {
+		components : {
+			Header
+		}	
+	}
+</script>
