@@ -12,3 +12,15 @@ export function register(userData){
 export function logout(){
 	return axios.post(`${API_URL}/logout`)
 }
+
+export function libraries(){
+	return axios.get(`${API_URL}/libraries`)
+}
+
+export function books(){
+	return axios.get(`${API_URL}/books`)
+}
+
+export function genres(){
+	return axios.get(`${API_URL}/genres`)
+}

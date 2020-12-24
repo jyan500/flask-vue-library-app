@@ -68,20 +68,11 @@
 		methods : {
 			register(){
 				this.$store.dispatch('register', {firstname : this.form.firstname, lastname : this.form.lastname, email: this.form.email, password: this.form.password}).then(
-					() => {
-						// after registration, also login
-						// return this.$store.dispatch('login', {email : this.form.email, password: this.form.password})
+					(response) => {
+						// after registration, redirect to login if successful
+						this.$router.push({name: 'Login', params : {message : response.data.message}})
 					},
-				).then(
-					() => {
-						// this.$router.push('/')
-					},
-				).catch(
-					(error) => {
-						console.log(error.response.data.message)
-					}
-				)
-			},
+				)},
 			onSubmit(evt){
 				evt.preventDefault();
 				this.is_success = true

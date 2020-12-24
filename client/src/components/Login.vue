@@ -37,7 +37,7 @@
 		data(){
 			return {
 				is_success : true,
-				message : '',
+				message : this.$route.params.message ? this.$route.params.message : '',
 				form : {
 					email : '',
 					password : '',
@@ -47,6 +47,7 @@
 		mounted(){
 			
 			EventBus.$on('failedAuthentication', (msg) => {
+				this.is_success = false;
 				this.message = msg;
 			})
 		},
@@ -56,8 +57,8 @@
 		methods : {
 			authenticate(){
 				this.$store.dispatch('login', {email: this.form.email, password: this.form.password}).then(
-					() => {
-						this.$router.push('/')
+					(response) => {
+						this.$router.push({name : 'Home', params : {message : response.data.message}})
 					},
 					(error) => {
 						this.is_success = false;

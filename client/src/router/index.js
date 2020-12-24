@@ -5,6 +5,7 @@ import Books from '../components/Books.vue'
 import Home from '../components/Home.vue'
 import Login from '../components/Login.vue'
 import Register from '../components/Register.vue'
+import Catalog from '../components/Catalog.vue'
 import store from '../store/index.js'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -29,6 +30,11 @@ const routes = [
 		path: '/register',
 		name : 'Register',
 		component : Register,
+	},
+	{
+		path : '/catalog',
+		name : 'Catalog',
+		component : Catalog,
 	},
 	{
 		path : '/books',

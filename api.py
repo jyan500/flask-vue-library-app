@@ -1,12 +1,16 @@
 from flask import Flask, jsonify, request, Blueprint, current_app
 from flask_cors import CORS  
-from models import User
+from models import User, Book, Genre, Library, LibraryBook, UserBook
+from app import db
 from datetime import datetime, timedelta
 from functools import wraps
 from utils import token_required
 import math
+from random import randint
 import jwt
 import uuid
+import csv
+import sys 
 api = Blueprint('api', __name__)
 CORS(api, resources={r'/*': {'origins' : '*'}})
 
@@ -51,7 +55,7 @@ def register():
 
 		## generate an 8 digit number represented as a string (leading zeroes are valid here)
 		card_num_length = 8 
-		library_card_num = ''.join(["{}".format(randint(0, 9)) for num in range(0, n)])
+		library_card_num = ''.join(["{}".format(randint(0, 9)) for num in range(0, card_num_length)])
 		user = User(firstname = data.get('firstname'), 
 			lastname = data.get('lastname'), 
 			email=data.get('email'), 
@@ -94,20 +98,27 @@ def logout():
 	## do not return a token
 	return jsonify({'message' : 'Logout Success!'}), 200
 
+@api.route('/libraries', methods = ['GET'])
+def libraries():
+	libraries = Library.query.all()
+	return jsonify({'message' : 'Libraries found successfully!', 'data' : [l.to_dict() for l in libraries]}), 200
+
+@api.route('/genres', methods = ['GET'])
+def genres():
+	genres = Genre.query.all()
+	return jsonify({'message' : 'Genres found successfully!', 'data' : [g.to_dict() for g in genres]}), 200
+
+@api.route('/catalog-search', methods = ['GET'])
+def catalog_search():
+	return jsonify({'message' : 'Search Successful!'}), 200
+
 @api.route('/books', methods = ['GET', 'POST'])
 def all_books():
 	response_object = {'status' : 'success'}
 	if (request.method == 'POST'):
-		post_data = request.get_json()
-		BOOKS.append({
-			'id' : uuid.uuid4().hex,
-			'title' : post_data.get('title'),
-			'author' : post_data.get('author'),
-			'read' : post_data.get('read')
-		})
-		response_object['message'] = 'Book added!'
+		pass
 	else:
-		response_object['books'] = BOOKS
+		response_object['data'] = [b.to_dict() for b in Book.query.all()]
 
 	return jsonify(response_object)
 

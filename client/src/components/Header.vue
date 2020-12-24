@@ -1,11 +1,12 @@
 <template>
 	<b-navbar toggleable = "lg" type = "dark" variant = "info">
-		<b-navbar-brand to = "/">Library</b-navbar-brand>	
+		<b-navbar-brand to = "/">San Mateo County Library</b-navbar-brand>	
 		<b-navbar-toggle target = "nav-collapse"></b-navbar-toggle>
 		<b-collapse id = "nav-collapse" is-nav>
 			<b-navbar-nav>
 				<b-nav-item v-if = "!isAuthenticated" to ="/login">Login</b-nav-item>
 				<b-nav-item v-if = "!isAuthenticated" to = "/register">Register</b-nav-item>
+				<b-nav-item to = "/catalog">Catalog</b-nav-item>
 				<b-nav-item v-if = "isAuthenticated" to = "/books">Books</b-nav-item>
 				<b-nav-item v-if = "isAuthenticated" @click = "logout">Logout</b-nav-item>
 			</b-navbar-nav>	
@@ -26,8 +27,7 @@
 			logout(){
 				this.$store.dispatch('logout').then(
 					(response) => {
-						console.log(response.data.message)
-						this.$router.push('/')
+						this.$router.push({'name' : 'Home', params : {message : response.data.message}})
 					},
 				)
 			},
