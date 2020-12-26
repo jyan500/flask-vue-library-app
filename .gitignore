@@ -24,4 +24,5 @@ pnpm-debug.log*
 *.sw?
 *.csv
 *.sql
-
+*.drawio
+*.txt
