@@ -26,7 +26,9 @@
 					</b-form-group>	
 				</b-col>	
 				<b-col md = "auto">
-					
+					<b-form-group>
+						<b-button style = "margin-top:30px;" type = "submit" variant = "primary">Search</b-button>	
+					</b-form-group>	
 				</b-col>	
 				<b-col md = "auto">
 					
@@ -36,10 +38,36 @@
 				</b-col>	
 			</b-row>	
 		</b-form>
-		<b-table id = "catalog" :fields = "fields" :items = "books" :per-page = "per_page" :current-page = "current_page">
-			<template #cell(image_url)="row"><img width = "150" height = "210" :src = "row.value"/></template>
-			<template #cell(genre)="row"><span>{{row.value.name}}</span></template>
-		</b-table>
+		<div v-if = "!loading">
+			<b-table id = "catalog" :fields = "fields" :items = "books" :per-page = "per_page" :current-page = "current_page">
+				<template #cell(image_url)="row"><img width = "150" height = "210" :src = "row.value"/></template>
+				<template #cell(genre)="row"><span>{{row.value.name}}</span></template>
+				<template #cell(actions)="row">
+					<b-button size="sm" @click="row.toggleDetails">
+					{{ row.detailsShowing ? 'Hide' : 'Show' }} Availability
+					</b-button>
+				</template>
+				<template #row-details="row">
+					<b-card>
+						<table class = "table">
+							<thead>
+								<th>Library</th>	
+								<th>Status</th>	
+							</thead>
+							<tbody>
+								<tr :key = "key" v-for = "(value, key) in row.item.library">
+									<td>{{key}}</td>
+									<td>{{value}}</td>
+								</tr>	
+							</tbody>
+						</table>
+					</b-card>
+				</template>
+			</b-table>
+		</div>
+		<div v-else>
+			<b-spinner></b-spinner>	
+		</div>
 		<b-pagination v-model = 'current_page' :total-rows = "rows" :per-page = "per_page" aria-controls = "catalog">
 		</b-pagination>
 	</div>
@@ -59,11 +87,13 @@
 				libraries : [],
 				books : [],
 				genres : [],
+				loading : false,
 				fields : [
 					{ key : 'image_url', label : 'Image'},	
 					{ key : 'title', label : 'Title', sortable : true},	
 					{ key : 'author', label : 'Author', sortable : true},	
 					{ key : 'genre', label : 'Genre'},	
+					{ key: 'actions', label: '' }
 				],
 				headers : [
 					{
@@ -110,7 +140,24 @@
 					}
 				)
 			},
-			onSubmit(){
+			onSubmit(e){
+				e.preventDefault()
+				let url_params = [];
+				let search_url = '?';
+				for (let key in this.form){
+					url_params.push(key + '=' + this.form[key])
+				}
+				console.log(url_params.join('&'))
+				search_url = search_url + url_params.join('&');
+				this.$store.dispatch('search', search_url).then(
+					(response) => {
+						this.books = response.data.data
+					},
+					(error) => {
+						console.log(error)
+					}
+
+				)
 
 			}
 

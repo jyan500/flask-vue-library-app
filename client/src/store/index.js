@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 // import AJAX functions
-import { authenticate, register, logout, libraries, books, genres  } from '@/api'
+import { authenticate, register, logout, libraries, books, genres, search  } from '@/api'
 import { isValidJwt, EventBus } from '@/utils'
 
 Vue.use(Vuex)
@@ -90,6 +90,14 @@ export default new Vuex.Store({
 			return genres().then(
 				(response) => {
 					return response
+				}
+			)
+		},
+		search(context, searchParams){
+			console.log('searchParams: ', searchParams);
+			return search(searchParams).then(
+				(response) => {
+					return response	
 				}
 			)
 		}

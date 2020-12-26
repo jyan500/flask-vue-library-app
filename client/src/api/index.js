@@ -24,3 +24,7 @@ export function books(){
 export function genres(){
 	return axios.get(`${API_URL}/genres`)
 }
+
+export function search(searchParams){
+	return axios.get(`${API_URL}/search${searchParams}`)	
+}

@@ -34,4 +34,4 @@ def populate():
 			book_obj_list.append(book)
 
 	db.session.add_all(book_obj_list)
-	db.session.commit()	`
+	db.session.commit()
