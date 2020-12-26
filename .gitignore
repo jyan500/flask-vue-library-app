@@ -6,8 +6,6 @@ node_modules
 # local env files
 .env.local
 .env.*.local
-.csv
-.sql
 
 # Log files
 npm-debug.log*
@@ -23,3 +21,6 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+*.csv
+*.sql
+
