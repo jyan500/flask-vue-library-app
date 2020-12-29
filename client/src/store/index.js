@@ -9,9 +9,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 	state: {
-		user : {},
-		jwt: '',
-		cart : []
+		user : localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : {},
+		jwt: localStorage.getItem('jwt') ? JSON.parse(localStorage.getItem('jwt')) : '',
+		cart : localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []
 
 	},
 	getters : {
@@ -24,7 +24,6 @@ export default new Vuex.Store({
 	},
 	mutations: {
 		setUserData(state, payload){
-			console.log('setUserData payload = ', payload)
 			state.user = payload.userData
 		},
 		resetUserData(state){
@@ -32,14 +31,22 @@ export default new Vuex.Store({
 		},
 		resetJwtToken(state){
 			state.jwt = '';
+			localStorage.removeItem('jwt')
 		},
 		setJwtToken(state, payload){
-			console.log('setJwtToken payload = ', payload)
-			localStorage.token = payload.jwt.token
+			localStorage.setItem('jwt', JSON.stringify(payload.jwt))
 			state.jwt = payload.jwt
+		},
+		addToCart(state, payload){
+			state.cart.push(payload.book)	
+			localStorage.setItem('cart', JSON.stringify(state.cart))
 		}
 	},
 	actions: {
+		addToCart(context, book){
+			console.log('book: ', book)
+			context.commit('addToCart', {book})
+		},
 		login(context, userData){
 			context.commit('setUserData', { userData })	
 			return authenticate(userData)

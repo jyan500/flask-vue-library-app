@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<b-alert :show = "showDismissibleAlert" @dismissed = "showDismissibleAlert = false" dismissible fade>{{message}}</b-alert>
 		<h2>Catalog</h2>	
 		<b-form @submit = "onSubmit">
 			<b-row>
@@ -53,11 +54,13 @@
 							<thead>
 								<th>Library</th>	
 								<th>Status</th>	
+								<th></th>
 							</thead>
 							<tbody>
 								<tr :key = "key" v-for = "(value, key) in row.item.library">
 									<td>{{key}}</td>
 									<td>{{value}}</td>
+									<td v-if = "value == 'On Shelf' && !isBookInCart(row.item.id)"><b-button @click = "addToCart(row.item)">Add to Cart</b-button></td>
 								</tr>	
 							</tbody>
 						</table>
@@ -104,7 +107,9 @@
 					title : '',
 					library_id : 0,
 					genre_id : 0,
-				}
+				},
+				showDismissibleAlert : false,
+				message : ''
 
 			}
 		},
@@ -119,6 +124,21 @@
 			}
 		},
 		methods : {
+			addToCart(book){
+				this.$store.dispatch('addToCart', book);
+				this.message = 'Added to cart successfully!';
+				this.showDismissibleAlert = true;
+			},
+			isBookInCart(book_id){
+				let filtered_book = this.$store.getters.getCart.filter((book) => {
+					console.log('book: ', book);
+					return book.id == book_id
+				})
+				console.log('filtered book: ', filtered_book);
+				let found = filtered_book.length > 0 ? true : false;
+				console.log('is book found: ', found);
+				return found
+			},
 			getLibraries(){
 				this.$store.dispatch('libraries').then(
 					(response) => {
