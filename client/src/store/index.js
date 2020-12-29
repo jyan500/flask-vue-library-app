@@ -10,12 +10,16 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 	state: {
 		user : {},
-		jwt: ''
+		jwt: '',
+		cart : []
 
 	},
 	getters : {
 		isAuthenticated(state){
 			return isValidJwt(state.jwt.token)
+		},
+		getCart(state){
+			return state.cart
 		}
 	},
 	mutations: {

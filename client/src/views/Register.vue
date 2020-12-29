@@ -35,7 +35,7 @@
 </style>
 <script>
 	import { EventBus } from '@/utils'
-	import Alert from './Alert.vue';
+	import Alert from '../components/Alert.vue';
 	export default {
 		props : {
 

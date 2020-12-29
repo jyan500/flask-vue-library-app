@@ -12,7 +12,7 @@
 <style>
 </style>
 <script>
-	import Alert from './Alert.vue';
+	import Alert from '../components/Alert.vue';
 	export default {
 		components : {
 			'alert' : Alert

@@ -149,11 +149,14 @@
 				}
 				console.log(url_params.join('&'))
 				search_url = search_url + url_params.join('&');
+				this.loading = true
 				this.$store.dispatch('search', search_url).then(
 					(response) => {
+						this.loading = false 
 						this.books = response.data.data
 					},
 					(error) => {
+						this.loading = false 
 						console.log(error)
 					}
 

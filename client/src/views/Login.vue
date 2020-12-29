@@ -25,7 +25,7 @@
 	
 </style>
 <script>
-	import Alert from './Alert.vue';
+	import Alert from '../components/Alert.vue';
 	import { EventBus } from '@/utils'
 	export default {
 		props : {
