@@ -1,10 +1,16 @@
 <template>
 	<div>
-		<b-list-group v-if = "cart.length > 0">
-			<b-list-group-item :key = "book.id" v-for = "book in cart">
-				{{ book.title }}	
-			</b-list-group-item>		
-		</b-list-group>	
+		<table v-if = "cart.length > 0">
+			<tbody>
+				<tr :key = "book.library_book_id" v-for = "book in cart">
+					<td>{{book.title}}</td>	
+					<td>{{book.library}}</td>	
+					<td>
+						<b-button @click = "removeFromCart(book)">Remove From Cart</b-button>
+					</td>	
+				</tr>				
+			</tbody>
+		</table>
 		<span v-else>The cart is empty</span>
 	</div>
 </template>
@@ -27,7 +33,9 @@
 			},
 		},
 		methods : {
-
+			removeFromCart(book){
+				this.$store.dispatch('removeFromCart', book)
+			}
 		}
 	}	
 </script>

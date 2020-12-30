@@ -175,11 +175,15 @@ def generate_book_result_arr(library_books):
 	for library_book in library_books:
 		if (book_obj.get(library_book.book_id) != None):
 			book_obj[library_book.book_id]['library'][library_book.library.name] = library_book.book_status.name	
+			book_obj[library_book.book_id]['library_book_ids'][library_book.library.name] = library_book.id	
 				
 		else:	
 			to_insert = {
 				'library' : {
 					library_book.library.name : library_book.book_status.name
+				},
+				'library_book_ids' : {
+					library_book.library.name : library_book.id
 				}
 			}
 			book_dict = library_book.book.to_dict()

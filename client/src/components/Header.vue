@@ -15,7 +15,7 @@
 					<b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
 				</b-nav-form>
 				<b-nav-item id = "cart-popover" right>
-					Cart
+					Cart <b-badge variant="primary" pill>{{ amountInCart }}</b-badge>
 					<b-popover placement = "bottom" triggers = "hover focus" target = "cart-popover">
 						<template #title>
 							Cart
@@ -46,7 +46,10 @@
 		computed : {
 			isAuthenticated(){
 				return this.$store.getters.isAuthenticated	
-			}
+			},
+			amountInCart(){
+				return this.$store.getters.getCart.length
+			},
 		},
 		methods : {
 			logout(){

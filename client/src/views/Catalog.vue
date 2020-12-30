@@ -57,10 +57,12 @@
 								<th></th>
 							</thead>
 							<tbody>
-								<tr :key = "key" v-for = "(value, key) in row.item.library">
-									<td>{{key}}</td>
-									<td>{{value}}</td>
-									<td v-if = "value == 'On Shelf' && !isBookInCart(row.item.id)"><b-button @click = "addToCart(row.item)">Add to Cart</b-button></td>
+								<!-- key is the library book id -->
+								<tr :key = "row.item.library_book_ids[library]" v-for = "(status, library) in row.item.library">
+									<td>{{library}}</td>
+									<td>{{status}}</td>
+									<td v-if = "status == 'On Shelf' && !isBookInCart(row.item.library_book_ids[library])"><b-button @click = "addToCart(row.item.title, row.item.library_book_ids[library], library)">Add to Cart</b-button></td>
+									<td v-else></td>
 								</tr>	
 							</tbody>
 						</table>
@@ -124,15 +126,29 @@
 			}
 		},
 		methods : {
-			addToCart(book){
-				this.$store.dispatch('addToCart', book);
-				this.message = 'Added to cart successfully!';
-				this.showDismissibleAlert = true;
+			showToast(title, append = false){
+				this.$bvToast.toast(title, {
+					title : this.message,
+					toaster : 'b-toaster-top-right',
+					solid : true,
+					appendToast: append
+				})
 			},
-			isBookInCart(book_id){
+			addToCart(title, library_book_id, library){
+				// keep track of which library the user is checking out from
+				let item = {
+					'library_book_id' : library_book_id,
+					'title' : title,
+					'library' : library
+				}
+				this.$store.dispatch('addToCart', item);
+				this.message = 'Added to cart successfully!';
+				this.showToast(title)
+			},
+			isBookInCart(library_book_id){
 				let filtered_book = this.$store.getters.getCart.filter((book) => {
 					console.log('book: ', book);
-					return book.id == book_id
+					return book.library_book_id == library_book_id
 				})
 				console.log('filtered book: ', filtered_book);
 				let found = filtered_book.length > 0 ? true : false;

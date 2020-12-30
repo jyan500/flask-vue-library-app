@@ -40,12 +40,23 @@ export default new Vuex.Store({
 		addToCart(state, payload){
 			state.cart.push(payload.book)	
 			localStorage.setItem('cart', JSON.stringify(state.cart))
+		},
+		removeFromCart(state, payload){
+			// set the new cart to be all items except the one we're trying to remove 
+			let new_cart = state.cart.filter((book) => {
+				return payload.book.library_book_id !== book.library_book_id	
+			})
+			state.cart = new_cart
+			localStorage.setItem('cart', JSON.stringify(state.cart))
 		}
 	},
 	actions: {
 		addToCart(context, book){
 			console.log('book: ', book)
 			context.commit('addToCart', {book})
+		},
+		removeFromCart(context, book){
+			context.commit('removeFromCart', {book})
 		},
 		login(context, userData){
 			context.commit('setUserData', { userData })	
