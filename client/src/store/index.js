@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 // import AJAX functions
-import { authenticate, register, logout, libraries, books, genres, search  } from '@/api'
+import { authenticate, register, logout, libraries, books, genres, search, checkout  } from '@/api'
 import { isValidJwt, EventBus } from '@/utils'
 
 Vue.use(Vuex)
@@ -48,9 +48,16 @@ export default new Vuex.Store({
 			})
 			state.cart = new_cart
 			localStorage.setItem('cart', JSON.stringify(state.cart))
+		},
+		emptyCart(state){
+			state.cart = [];
+			localStorage.setItem('cart', [])
 		}
 	},
 	actions: {
+		emptyCart(context){
+			context.commit('emptyCart')
+		},
 		addToCart(context, book){
 			console.log('book: ', book)
 			context.commit('addToCart', {book})
@@ -121,6 +128,22 @@ export default new Vuex.Store({
 				(response) => {
 					return response	
 				}
+			)
+		},
+		checkout(context, data){
+			let to_send = {
+				library_card_num : data.library_card_num,
+				cart : this.state.cart 
+			}
+			return checkout(to_send, context.state.jwt.token).then(
+				(response) => {
+					return response
+				}
+			).catch(
+				(error) => {
+					console.log(error)	
+					EventBus.$emit('failedLibCardCheck', error.response.data.message)
+				}	
 			)
 		}
 	},

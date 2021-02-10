@@ -45,6 +45,7 @@ def ping_pong():
 def test():
 	return jsonify('logged in!')
 
+## USER ROUTES
 @api.route('/register', methods = ['POST'])
 def register():
 	data = request.get_json()
@@ -98,6 +99,7 @@ def logout():
 	## do not return a token
 	return jsonify({'message' : 'Logout Success!'}), 200
 
+### GET (For Dropdowns)
 @api.route('/libraries', methods = ['GET'])
 def libraries():
 	libraries = Library.query.all()
@@ -108,6 +110,7 @@ def genres():
 	genres = Genre.query.all()
 	return jsonify({'message' : 'Genres found successfully!', 'data' : [g.to_dict() for g in genres]}), 200
 
+## Catalog 
 @api.route('/search', methods = ['GET'])
 def catalog_search():
 	data = []
@@ -128,6 +131,37 @@ def catalog_search():
 		data = generate_book_result_arr(library_books)
 
 	return jsonify({'message' : 'Search Successful!', 'data': data}), 200
+
+## Checkout
+@api.route('/checkout', methods = ['POST'])
+@token_required
+def checkout(current_user):
+	data = request.get_json()
+	cart = data.get('cart')
+	if (cart == None):
+		return jsonify({'message' : 'Error, cart is empty!'}), 500
+
+	library_card_num = data.get('library_card_num')
+	print(data, file = sys.stderr)
+	for item in cart:
+		print(item, file = sys.stderr)
+	# ## validation
+	if (current_user.library_card_num == library_card_num):
+		print('validation passes', file = sys.stderr)
+		for item in cart:
+			book = LibraryBook.query.filter_by(library_book_id = item.library_book_id)
+			## update the status of the library book to checked out
+			## create new UserBook entry
+
+		# book = LibraryBook.query.filter_by(library_id = library)
+		# user = UserBook(date_borrowed = data.get('firstname'), 
+		# 	user = current_user,
+		# 	library_book = Book)
+		# db.session.add(user)
+		# db.session.commit()
+		return jsonify({'message' : 'Checked out successfully!'}), 200
+	else:
+		return jsonify({'message' : 'Incorrect Library Card Number!'}), 500
 
 @api.route('/books', methods = ['GET', 'POST'])
 def all_books():
@@ -169,22 +203,18 @@ def remove_book(book_id):
     return False
 
 ## take in library book flask sql alchemy query object and return dictionary with proper format including the books
-## and the library mapped to 
+## and the library mapped to object with the status and library book id
 def generate_book_result_arr(library_books):
 	book_obj = dict() 
 	for library_book in library_books:
 		if (book_obj.get(library_book.book_id) != None):
-			book_obj[library_book.book_id]['library'][library_book.library.name] = library_book.book_status.name	
-			book_obj[library_book.book_id]['library_book_ids'][library_book.library.name] = library_book.id	
+			book_obj[library_book.book_id]['library'][library_book.library.name] = {'status' : library_book.book_status.name, 'library_book_id' : library_book.id}
 				
 		else:	
 			to_insert = {
 				'library' : {
-					library_book.library.name : library_book.book_status.name
+					library_book.library.name : {'status' : library_book.book_status.name, 'library_book_id' : library_book.id }
 				},
-				'library_book_ids' : {
-					library_book.library.name : library_book.id
-				}
 			}
 			book_dict = library_book.book.to_dict()
 			for key in book_dict:

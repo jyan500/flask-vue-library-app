@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<b-alert dismissible fade :variant = "is_success ? 'success' : 'danger'" >{{ message }}</b-alert>
+		<b-alert show :variant = "is_success ? 'success' : 'danger'" >{{ message }}</b-alert>
 		<br>
 	</div>
 </template>

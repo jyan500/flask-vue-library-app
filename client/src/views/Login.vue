@@ -1,5 +1,7 @@
 <template>
 	<b-container>
+		<h2>Login</h2>
+		<hr/>
 		<b-row>
 			<alert v-show = "message != ''" :message = "message" :is_success = "is_success"></alert>
 		</b-row>

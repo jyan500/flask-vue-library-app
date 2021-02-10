@@ -16,7 +16,7 @@ class User(db.Model, UserMixin):
 	user_books = db.relationship('UserBook', backref = 'user_book', lazy = True)
 
 	def __repr__(self):
-		return f"User('{self.username}', '{self.email}')"
+		return f"User('{self.firstname}', '{self.lastname}, '{self.email}')"
 
 	def to_dict():
 		return dict(id = self.id, firstname = self.firstname, lastname = self.lastname, library_card_num = self.library_card_num, email = self.email)

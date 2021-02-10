@@ -28,3 +28,7 @@ export function genres(){
 export function search(searchParams){
 	return axios.get(`${API_URL}/search${searchParams}`)	
 }
+
+export function checkout(data, jwt){
+	return axios.post(`${API_URL}/checkout`, data, { headers : {Authorization : `Bearer: ${jwt}`} })
+}

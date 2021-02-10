@@ -2,6 +2,7 @@
 	<div>
 		<b-alert :show = "showDismissibleAlert" @dismissed = "showDismissibleAlert = false" dismissible fade>{{message}}</b-alert>
 		<h2>Catalog</h2>	
+		<hr/>
 		<b-form @submit = "onSubmit">
 			<b-row>
 				<b-col md = "auto">
@@ -58,10 +59,10 @@
 							</thead>
 							<tbody>
 								<!-- key is the library book id -->
-								<tr :key = "row.item.library_book_ids[library]" v-for = "(status, library) in row.item.library">
+								<tr :key = "val.library_book_id" v-for = "(val, library) in row.item.library">
 									<td>{{library}}</td>
-									<td>{{status}}</td>
-									<td v-if = "status == 'On Shelf' && !isBookInCart(row.item.library_book_ids[library])"><b-button @click = "addToCart(row.item.title, row.item.library_book_ids[library], library)">Add to Cart</b-button></td>
+									<td>{{val.status}}</td>
+									<td v-if = "val.status == 'On Shelf' && !isBookInCart(val.library_book_id)"><b-button @click = "addToCart(row.item.title, val.library_book_id, library)">Add to Cart</b-button></td>
 									<td v-else></td>
 								</tr>	
 							</tbody>
@@ -73,7 +74,7 @@
 		<div v-else>
 			<b-spinner></b-spinner>	
 		</div>
-		<b-pagination v-model = 'current_page' :total-rows = "rows" :per-page = "per_page" aria-controls = "catalog">
+		<b-pagination v-if = "!loading" v-model = 'current_page' :total-rows = "rows" :per-page = "per_page" aria-controls = "catalog">
 		</b-pagination>
 	</div>
 </template>
@@ -116,9 +117,19 @@
 			}
 		},
 		mounted(){
+			// const requests = [];
+			// this.loading = true;
+			// requests.push(this.getLibraries);
+			// requests.push(this.getBooks);
+			// requests.push(this.getGenres);
+			// Promise.all(requests).then(
+			// 	() => {
+			// 		this.loading = false;
+			// 	}
+			// )
 			this.getLibraries();
-			this.getBooks();
 			this.getGenres();
+			this.getBooks();
 		},
 		computed : {
 			rows(){

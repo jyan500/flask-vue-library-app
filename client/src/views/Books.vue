@@ -2,7 +2,7 @@
 	<b-container>
 		<b-row>
 			<b-col>
-				<h1>Your Books</h1>
+				<h2>Your Books</h2>
 				<hr><br><br>
 				<alert v-show = "message != ''" :message = "message"></alert>
 				<button type="button" class="btn btn-success btn-sm" v-b-modal.book-modal>Add Book</button>
@@ -129,7 +129,7 @@
 </style>
 <script>
 	import axios from 'axios';
-	import Alert from './Alert.vue';
+	import Alert from '../components/Alert.vue';
 	export default {
 		props :{
 
@@ -151,7 +151,7 @@
 					author: '',
 					read: [],
 				},
-				message : '',
+				message : this.$route.params.message ? this.$route.params.message : '',
 				loading: false,
 			}
 		},

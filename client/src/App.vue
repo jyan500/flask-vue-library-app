@@ -27,6 +27,11 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+ 
+i {
+	font-size: 1.2em;	
+	cursor: pointer;
+}
 </style>
 
 <script>

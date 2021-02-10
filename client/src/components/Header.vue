@@ -14,13 +14,14 @@
 					<b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
 					<b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
 				</b-nav-form>
-				<b-nav-item id = "cart-popover" right>
-					Cart <b-badge variant="primary" pill>{{ amountInCart }}</b-badge>
+				<!-- Do not allow Cart to be modified on the checkout page -->
+				<b-nav-item v-if = "this.$route.name != 'Checkout'" to = "/cart" id = "cart-popover" right>
+					Cart <b-badge v-if = "amountInCart != 0" variant="primary" pill>{{ amountInCart }}</b-badge>
 					<b-popover placement = "bottom" triggers = "hover focus" target = "cart-popover">
 						<template #title>
 							Cart
 						</template>	
-						<cart></cart>
+						<cart :is_view = "false"></cart>
 					</b-popover>
 				</b-nav-item>
 				<b-nav-item-dropdown v-if = "isAuthenticated" right>
