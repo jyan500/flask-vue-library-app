@@ -64,6 +64,10 @@
 				this.message = '';
 				this.$store.dispatch('checkout', this.form).then(
 					(response) => {
+						// clear the cart
+						this.$store.dispatch('emptyCart');
+
+						// redirect to the books page
 						this.$router.push({name : 'Books', params : {message : response.data.message}})
 					},
 				).catch((error) => {

@@ -12,16 +12,22 @@
 						<tr>
 							<th scope="col">Title</th>
 							<th scope="col">Author</th>
-							<th scope="col">Read?</th>
+							<th scope="col">Genre</th>
+							<th scope="col">Date Borrowed</th>
+							<th scope="col">Date Due</th>
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr :key = "index" v-for = "(book, index) in books">
-							<td>{{ book.title }}</td>
-							<td>{{ book.author }}</td>
+						<tr :key = "index" v-for = "(user_book, index) in books">
+							<td>{{ user_book.library_book.book.title }}</td>
+							<td>{{ user_book.library_book.book.author }}</td>
+							<td>{{ user_book.library_book.book.genre.name }}</td>
 							<td>
-								<span>{{ book.read ? 'Yes' : ''}}</span>
+								{{ user_book.date_borrowed}}	
+							</td>
+							<td>
+								{{ user_book.date_due }}
 							</td>
 							<td>
 								<div class="btn-group" role="group">
@@ -140,6 +146,7 @@
 		data(){
 			return {
 				books : [],
+				dates : [],
 				addBookForm : {
 					title : '',	
 					author : '',
@@ -163,16 +170,27 @@
 				this.editForm = book;
 			},
 			getBooks(){
-				const path = "http://localhost:5000/books"
-				axios.get(path).then(
+				// const path = "http://localhost:5000/books"
+				this.$store.dispatch('user_books').then(
 					(response) => {
-						this.books = response.data.books
+						this.books = response.data.books	
+						this.dates = response.data.dates
 					}
 				).catch(
 					(error) => {
 						console.log(error)
 					}
 				)
+
+				// axios.get(path).then(
+				// 	(response) => {
+				// 		this.books = response.data.books
+				// 	}
+				// ).catch(
+				// 	(error) => {
+				// 		console.log(error)
+				// 	}
+				// )
 			},
 			addBook(payload){
 				this.message = '';

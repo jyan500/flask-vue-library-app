@@ -32,3 +32,7 @@ export function search(searchParams){
 export function checkout(data, jwt){
 	return axios.post(`${API_URL}/checkout`, data, { headers : {Authorization : `Bearer: ${jwt}`} })
 }
+
+export function user_books(jwt){
+	return axios.get(`${API_URL}/user-books`, { headers : {Authorization : `Bearer: ${jwt}`}})
+}

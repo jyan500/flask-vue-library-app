@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, Blueprint, current_app
 from flask_cors import CORS  
-from models import User, Book, Genre, Library, LibraryBook, UserBook
+from models import User, Book, Genre, Library, LibraryBook, UserBook, BookStatus
 from app import db
 from datetime import datetime, timedelta
 from functools import wraps
@@ -149,9 +149,16 @@ def checkout(current_user):
 	if (current_user.library_card_num == library_card_num):
 		print('validation passes', file = sys.stderr)
 		for item in cart:
-			book = LibraryBook.query.filter_by(library_book_id = item.library_book_id)
 			## update the status of the library book to checked out
+			library_book = LibraryBook.query.filter_by(id = item['library_book_id']).first()
+			library_book.book_status_id = BookStatus.query.filter_by(name = 'Borrowed').first().id 
+			current_date = datetime.today()
+			return_date = current_date + timedelta(days=14)
+
 			## create new UserBook entry
+			user_book = UserBook(user = current_user, library_book = library_book, date_borrowed = current_date, date_due = return_date)
+			db.session.add(user_book)
+			db.session.commit()
 
 		# book = LibraryBook.query.filter_by(library_id = library)
 		# user = UserBook(date_borrowed = data.get('firstname'), 
@@ -169,9 +176,24 @@ def all_books():
 	if (request.method == 'POST'):
 		pass
 	else:
-
 		library_books = LibraryBook.query.all()
-		response_object['data'] = generate_book_result_arr(library_books) 
+		response_object['data'] = generate_book_result_arr(library_books)
+
+	return jsonify(response_object)
+
+@api.route('/user-books', methods = ['GET', 'POST'])
+@token_required
+def user_books(current_user):
+	response_object = {'status' : 'success'}
+	if (request.method == 'POST'):
+		pass
+	else:
+
+		user_books = UserBook.query.filter_by(user_id = current_user.id).all()
+		library_books = [] 
+		for user_book in user_books:
+			library_books.append({'library_book' : user_book.library_book.to_dict(), 'date_due' : user_book.date_due.strftime('%m/%d/%Y'), 'date_borrowed' : user_book.date_borrowed.strftime('%m/%d/%Y')})
+		response_object['books'] = library_books
 
 	return jsonify(response_object)
 

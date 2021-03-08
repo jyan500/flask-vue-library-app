@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 // import AJAX functions
-import { authenticate, register, logout, libraries, books, genres, search, checkout  } from '@/api'
+import { authenticate, register, logout, libraries, books, genres, search, checkout , user_books } from '@/api'
 import { isValidJwt, EventBus } from '@/utils'
 
 Vue.use(Vuex)
@@ -127,6 +127,13 @@ export default new Vuex.Store({
 			return search(searchParams).then(
 				(response) => {
 					return response	
+				}
+			)
+		},
+		user_books(context){
+			return user_books(context.state.jwt.token).then(
+				(response) => {
+					return response
 				}
 			)
 		},
